@@ -35,8 +35,27 @@ var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 ctx.fillStyle = "#FF0000";
 ctx.beginPath();
-ctx.moveTo(100, 0);
-ctx.lineTo(100, 50);
+
+// generuje linie - labirynt
+for (let index = 0; index < 100; index+=10) {
+	for (let i = 0; i < 10; i++) {
+		//if (i == 0){
+			// 1 - 10
+			x = Math.floor(Math.random() * 1000) + 1;
+			y = Math.floor(Math.random() * 600) + 1;
+			ctx.moveTo(x, y);
+		//}
+		x = Math.floor(Math.random() * 150) + x;
+		y = Math.floor(Math.random() * 150) + y;
+		ctx.lineTo(x, y);
+	}
+}
+
+
+//ctx.moveTo(50, 50);
+//ctx.lineTo(60, 60);
+//ctx.lineTo(60, 70);
+//ctx.lineTo(70, 70);
 //ctx.lineTo(70, 100);
 ctx.strokeStyle = "#FF0000";
 ctx.stroke();
@@ -83,21 +102,21 @@ document.onkeydown = function(e) {
 
 	info.innerHTML = Math.round(rect1.width) + " " + Math.round(rect1.height) + " " + rect1.left + " " +  rect1.top + "<br>";
 
+	collisionUpFlag = checkXCollision(x1, y1, rect1.width);
+	collisionDownFlag = checkXCollision(x1, y1 + rect1.height, rect1.width);
+	collisionLeftFlag = checkYCollision(x1, y1, rect1.height);
+	collisionRightFlag = checkYCollision(x1 + rect1.width, y1, rect1.height);
+
+	if(collisionUpFlag || collisionDownFlag || collisionLeftFlag || collisionRightFlag){
+		infoColor.innerHTML += " collision";
+		// wraca do początku
+		x1=0;
+		y1=0;
+	}
+
 	
 
-	// xColor = 4;
-	// yColor = 4;
-
-	//const pixel = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	const pixel = ctx.getImageData(x1 + rect1.width, y1, 1, 1);
-	const data = pixel.data;
-	//const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
-
-	infoColor.innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3];
-
-	if (data[0] == 255){
-		infoColor.innerHTML += " collision";
-	}
+	
 
 	/*
 	var leftToRight = x1 + rect1.width > x2;
@@ -112,3 +131,38 @@ document.onkeydown = function(e) {
 	}
 	*/
 }
+
+// sprawdź kolizję po x (boki góra i dół)
+checkXCollision = function(x, y, width){
+	for (let i= x; i< x + width; i++) {
+		//const pixel = ctx.getImageData(x, y, width, height);
+		const pixel = ctx.getImageData(i, y, 1, 1);
+		const data = pixel.data;
+		//const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
+		// R G B ALPHA
+		infoColor.innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3];
+
+		if (data[0] == 255){
+			//infoColor.innerHTML += " collision";
+			return true;
+			//break;
+		}
+	}
+} 
+
+// sprawdź kolizję po y (boki lewy i prawy)
+checkYCollision = function(x, y, height){
+	for (let i= y; i< y + height; i++) {
+		//const pixel = ctx.getImageData(x, y, width, height);
+		const pixel = ctx.getImageData(x, i, 1, 1);
+		const data = pixel.data;
+		//const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
+		infoColor.innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3];
+
+		if (data[0] == 255){
+			//infoColor.innerHTML += " collision";
+			return true;
+			//break;
+		}
+	}
+} 
