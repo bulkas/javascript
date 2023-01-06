@@ -1,0 +1,18 @@
+#myCanvas {
+    position:absolute; 
+    left:0px; 
+    top:0px;
+}
+#info{
+    position:absolute; 
+    left:0px; 
+    top:120px;  
+}
+#infoColor{
+    position:absolute; 
+    left:0px; 
+    top:140px;  
+}
+#napis1{
+    margin:0px;
+}
