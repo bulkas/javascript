@@ -16,8 +16,11 @@ d 	68
 */
 
 
-x1 = 20;
-y1 = 80;
+x1 = 10;
+y1 = 10;
+
+// prędkośc
+var speed = 1;
 
 /*
 const img = new Image();
@@ -70,19 +73,19 @@ document.onkeydown = function(e) {
 	switch (e.keyCode) {
 		case 37:
 			//alert('left');
-			x1 -= 1;
+			x1 -= speed;
 			break;
 		case 38:
 			//alert('up');
-			y1 -= 1;
+			y1 -= speed;
 			break;
 		case 39:
 			//alert('right');
-			x1 +=1;
+			x1 += speed;
 			break;
 		case 40:
 			//alert('down');
-			y1 +=1;
+			y1 += speed;
 			break;
 	}
 	//napis1.style.left = x1;
@@ -112,57 +115,51 @@ document.onkeydown = function(e) {
 		// wraca do początku
 		x1=0;
 		y1=0;
+		napis1.style.setProperty("left", x1 + "px");
+		napis1.style.setProperty("top", y1 + "px");
 	}
 
-	
-
-	
-
-	/*
-	var leftToRight = x1 + rect1.width > x2;
-	var rightToLeft = x2 + rect2.width > x1;
-	var upToDown = y1 + rect1.height > y2;
-	var DownToUp = y2 + rect2.height > y1;
-
-	if (leftToRight && rightToLeft && upToDown && DownToUp){
-		//alert("collision");
-		napis2.style.display = "none";
-		napis1.style.display = "none";		
-	}
-	*/
 }
 
 // sprawdź kolizję po x (boki góra i dół)
 checkXCollision = function(x, y, width){
-	for (let i= x; i< x + width; i++) {
-		//const pixel = ctx.getImageData(x, y, width, height);
-		const pixel = ctx.getImageData(i, y, 1, 1);
-		const data = pixel.data;
+	const imageData = ctx.getImageData(x, y, width, 1);  // tylko raz kopiuje dane - szybciej działa
+	for (let i = 0; i < imageData.data.length; i += 4) {
+		var r = imageData.data[i];
+		//const data = imageData.data;
 		//const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
 		// R G B ALPHA
-		infoColor.innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3];
+		//infoColor.innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3];
+		infoColor.innerHTML = "red = " + r;
 
-		if (data[0] == 255){
+		if (r == 255){
 			//infoColor.innerHTML += " collision";
 			return true;
-			//break;
+			break;
 		}
 	}
 } 
 
 // sprawdź kolizję po y (boki lewy i prawy)
 checkYCollision = function(x, y, height){
-	for (let i= y; i< y + height; i++) {
+	const imageData = ctx.getImageData(x, y, 1, height);
+	//for (let i= y; i< y + height; i++) {
+	for (let i = 0; i < imageData.data.length; i += 4) {
 		//const pixel = ctx.getImageData(x, y, width, height);
-		const pixel = ctx.getImageData(x, i, 1, 1);
-		const data = pixel.data;
+		//var index = (x + i * imageData.width) * 4;
+		var r = imageData.data[i];
+		console.log(r);
+		//const data = pixel.data;
 		//const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
-		infoColor.innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3];
+		//infoColor.innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3];
+		infoColor.innerHTML = "red = " + r;
 
-		if (data[0] == 255){
+
+		if (r == 255){
 			//infoColor.innerHTML += " collision";
 			return true;
-			//break;
+			break;
 		}
+		
 	}
 } 
